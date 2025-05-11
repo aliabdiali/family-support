@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+https://chatgpt.com/canvas/shared/6820c270a0c0819195633d4ad04e5aa8
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heshiis Taageero Qoys</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            margin-top: 40px;
+        }
+        input, button, select {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .submitted-orders {
+            margin-top: 20px;
+        }
+        .submitted-orders p {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            position: relative;
+            padding-right: 80px; /* space for delete button */
+        }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 2px 6px; font-size: 10px;
+            cursor: pointer;
+        }
+        .confirmation {
+            background: #e9ffe9;
+            border: 1px solid #28a745;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Heshiis Taageero Qoys</h2>
+<p><em>Waxaan go'aansanay in aan is caawinno midba midka kale.</em></p>
+    <form id="supportForm">
+        <label for="name">Magaca (Name):</label>
+        <select id="name" required>
+            <option value="Omar">Omar</option>
+            <option value="Ali">Ali</option>
+            <option value="Hussein">Hussein</option>
+            <option value="Zaki">Zaki</option>
+            <option value="Hani">Hani</option>
+            <option value="Naima">Naima</option>
+        </select>
+
+        <label for="amount">Lacagta (Amount):</label>
+        <input type="text" id="amount" value="$20" readonly>
+
+        <label for="reason">Ujeeddada (Reason):</label>
+        <input type="text" id="reason" value="Arrimo degdeg ah" readonly>
+
+        <input type="password" id="submitCode" placeholder="Furaha sirta ah">
+        <button type="button" onclick="submitSupport()">Submit</button>
+</form>
+    <button onclick="requestToShowRecords()">Ma rabtaa inaad aragto taageerada la gudbiyey?</button>
+<div id="submittedSection" style="display:none; margin-top:20px;"></div>
+</div>
+
+<script>
+function submitSupport() {
+    const passcode = document.getElementById('submitCode').value;
+    if (passcode !== '1234') {
+        alert('Furaha sirta ah waa qalad.');
+        return;
+    }
+
+    const confirmSupport = confirm("Ma hubtaa inaad u baahan tahay taageeradan?");
+    if (!confirmSupport) {
+        alert("Wax taageero ah lama gudbin.");
+        return;
+    }
+
+    const name = document.getElementById('name').value;
+    const amount = "$20";
+    const reason = "Arrimo degdeg ah";
+    const date = new Date().toLocaleDateString();
+    const data = { name, amount, reason, date };
+
+    let records = JSON.parse(localStorage.getItem('supportRecords')) || [];
+
+    const isDuplicate = records.some(r => r.name === name && r.date === date);
+    if (isDuplicate) {
+        alert("Taageero hore ayaa loo diiwaan geliyey maanta magacaas.");
+        return;
+    }
+
+    records.push(data);
+    localStorage.setItem('supportRecords', JSON.stringify(records));
+
+    showConfirmation(data);
+    document.getElementById("supportForm").reset();
+    document.getElementById("submitCode").value = "";
+}
+
+function showConfirmation(data) {
+    alert(`Waad ku mahadsan tahay!
+Magaca: ${data.name}
+Lacagta: ${data.amount}
+Ujeeddada: ${data.reason}
+Taariikhda: ${data.date}`);
+}
+function requestToShowRecords() {
+    const pass = prompt("Fadlan geli furaha sirta ah si aad u aragto taageerada la gudbiyey:");
+    if (pass !== '1234') {
+        alert("Furaha sirta ah waa qalad.");
+        return;
+    }
+
+    let records = JSON.parse(localStorage.getItem('supportRecords')) || [];
+    let section = document.getElementById("submittedSection");
+
+    if (records.length === 0) {
+        section.innerHTML = '<p>Wali wax taageero ah laguma darin.</p>';
+    } else {
+        section.innerHTML = '<h3>Taageerooyin la gudbiyey:</h3>' + records.map(r =>
+            `<p><strong>Magaca:</strong> ${r.name}<br><strong>Lacagta:</strong> ${r.amount}<br><strong>Ujeeddada:</strong> ${r.reason}<br><strong>Taariikhda:</strong> ${r.date}</p>`
+        ).join('');
+    }
+    section.style.display = 'block';
+    setTimeout(() => {
+        section.style.display = 'none';
+    }, 5000);
+}
+</script>
+</body>
+</html>
